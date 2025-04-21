@@ -24,3 +24,7 @@ log = "0.4"
 tauri = { version = "2", features = [] }
 tauri-plugin-log = "2"
 tauri-plugin-dialog = "2"
+
+# 文本嵌入相关依赖
+anyhow = "1.0.98"
+rand = "0.8.5"
