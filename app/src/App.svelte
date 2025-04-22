@@ -16,14 +16,14 @@
       const selected = await open({
         directory: true,
         multiple: false,
-        title: '选择式样书文件夹'
+        title: '仕様書フォルダを選択'
       });
       if (selected) {
         specPath = selected;
       }
     } catch (error) {
-      console.error('选择式样书文件夹出错:', error);
-      errorMessage = `选择文件夹出错: ${error.message}`;
+      console.error('仕様書フォルダの選択エラー:', error);
+      errorMessage = `フォルダ選択エラー: ${error.message}`;
     }
   }
 
@@ -32,14 +32,14 @@
       const selected = await open({
         directory: true,
         multiple: false,
-        title: '选择代码文件夹'
+        title: 'コードフォルダを選択'
       });
       if (selected) {
         codePath = selected;
       }
     } catch (error) {
-      console.error('选择代码文件夹出错:', error);
-      errorMessage = `选择文件夹出错: ${error.message}`;
+      console.error('コードフォルダの選択エラー:', error);
+      errorMessage = `フォルダ選択エラー: ${error.message}`;
     }
   }
 
@@ -48,20 +48,20 @@
       const selected = await open({
         directory: true,
         multiple: false,
-        title: '选择模型文件夹'
+        title: 'モデルフォルダを選択'
       });
       if (selected) {
         modelPath = selected;
       }
     } catch (error) {
-      console.error('选择模型文件夹出错:', error);
-      errorMessage = `选择文件夹出错: ${error.message}`;
+      console.error('モデルフォルダの選択エラー:', error);
+      errorMessage = `フォルダ選択エラー: ${error.message}`;
     }
   }
 
   async function startProcess() {
     if (!specPath || !codePath) {
-      errorMessage = "请先选择两个文件夹";
+      errorMessage = "両方のフォルダを選択してください";
       return;
     }
 
@@ -69,13 +69,13 @@
     errorMessage = '';
     
     try {
-      // 这里将来会添加实际的处理逻辑
+      // 将来ここに実際の処理ロジックを追加する
       await invoke('start_indexing', { specPath, codePath });
-      // 成功后跳转到下一页
+      // 成功したら次のページに移動
       // window.location.href = '/viewer';
     } catch (error) {
-      console.error('处理出错:', error);
-      errorMessage = `处理出错: ${error.message}`;
+      console.error('処理エラー:', error);
+      errorMessage = `処理エラー: ${error.message}`;
     } finally {
       isLoading = false;
     }
@@ -83,7 +83,7 @@
 
   async function generateEmbedding() {
     if (!textInput) {
-      errorMessage = "请输入要生成嵌入的文本";
+      errorMessage = "埋め込みを生成するテキストを入力してください";
       return;
     }
 
@@ -91,10 +91,10 @@
     errorMessage = '';
     
     try {
-      // 如果没有选择模型路径，使用一个默认路径或空字符串
+      // モデルパスが選択されていない場合、デフォルトパスまたは空文字列を使用
       const path = modelPath || "./models";
       
-      // 将参数作为单个对象传递，与EmbeddingArgs结构体匹配
+      // パラメータを単一のオブジェクトとして渡し、EmbeddingArgs構造体と一致させる
       embedding = await invoke('get_text_embedding', { 
         args: {
           text: textInput, 
@@ -102,10 +102,10 @@
         }
       });
       
-      console.log('生成的嵌入向量:', embedding);
+      console.log('生成された埋め込みベクトル:', embedding);
     } catch (error) {
-      console.error('生成嵌入出错:', error);
-      errorMessage = `生成嵌入出错: ${error.message || error}`;
+      console.error('埋め込み生成エラー:', error);
+      errorMessage = `埋め込み生成エラー: ${error.message || error}`;
       embedding = null;
     } finally {
       isEmbeddingLoading = false;
@@ -123,38 +123,38 @@
 </script>
 
 <main>
-  <h1>Mirutas - 项目导航</h1>
+  <h1>Mirutas - プロジェクトナビゲーション</h1>
   
   <div class="container">
     <div class="path-section">
-      <h2>式样书文件夹</h2>
+      <h2>仕様書フォルダ</h2>
       <div class="path-display">
-        <p class="path">{specPath || '未选择'}</p>
-        <button on:click={selectSpecFolder}>浏览...</button>
+        <p class="path">{specPath || '未選択'}</p>
+        <button on:click={selectSpecFolder}>参照...</button>
       </div>
     </div>
 
     <div class="path-section">
-      <h2>代码文件夹</h2>
+      <h2>コードフォルダ</h2>
       <div class="path-display">
-        <p class="path">{codePath || '未选择'}</p>
-        <button on:click={selectCodeFolder}>浏览...</button>
+        <p class="path">{codePath || '未選択'}</p>
+        <button on:click={selectCodeFolder}>参照...</button>
       </div>
     </div>
 
     <div class="path-section">
-      <h2>模型文件夹</h2>
+      <h2>モデルフォルダ</h2>
       <div class="path-display">
-        <p class="path">{modelPath || '未选择'}</p>
-        <button on:click={selectModelFolder}>浏览...</button>
+        <p class="path">{modelPath || '未選択'}</p>
+        <button on:click={selectModelFolder}>参照...</button>
       </div>
     </div>
 
     <div class="embedding-test">
-      <h2>嵌入测试</h2>
+      <h2>埋め込みテスト</h2>
       <textarea 
         bind:value={textInput} 
-        placeholder="输入要生成嵌入的文本"
+        placeholder="埋め込みを生成するテキストを入力"
         rows="3"
       ></textarea>
       <button 
@@ -162,16 +162,16 @@
         disabled={!textInput || isEmbeddingLoading}
         class="primary-button"
       >
-        {isEmbeddingLoading ? '生成中...' : '生成嵌入'}
+        {isEmbeddingLoading ? '生成中...' : '埋め込みを生成'}
       </button>
 
       {#if embedding}
         <div class="embedding-result">
-          <h3>嵌入结果 (前10个值):</h3>
+          <h3>埋め込み結果（最初の10個の値）:</h3>
           <p class="embedding-data">
             {embedding.slice(0, 10).map(v => v.toFixed(4)).join(', ')}...
           </p>
-          <p>向量维度: {embedding.length}</p>
+          <p>ベクトル次元: {embedding.length}</p>
         </div>
       {/if}
     </div>
@@ -183,13 +183,13 @@
     {/if}
 
     <div class="actions">
-      <button on:click={resetPaths}>重置</button>
+      <button on:click={resetPaths}>リセット</button>
       <button 
         on:click={startProcess} 
         disabled={!specPath || !codePath || isLoading}
         class="primary-button"
       >
-        {isLoading ? '处理中...' : '开始索引'}
+        {isLoading ? '処理中...' : 'インデックス作成開始'}
       </button>
     </div>
   </div>
